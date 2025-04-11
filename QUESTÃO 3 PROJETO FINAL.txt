@@ -1,0 +1,264 @@
+-- Criação das tabelas e definição das chaves primárias 
+
+CREATE TABLE Aluno (
+    Matricula number(8) not null PRIMARY KEY,
+    Nome varchar2(100) not null,
+    Email varchar2(80) not null,
+    Serie varchar2(10) not null
+);
+
+CREATE TABLE Disciplina (
+    ID_Disciplina number(8) not null PRIMARY KEY,
+    NomeDisciplina varchar2(30) not null,
+    CargaHoraria number(4) not null
+);
+
+CREATE TABLE Professor (
+    ID_Professor number(8) not null PRIMARY KEY,
+    Email  varchar2(80) not null ,
+    Nome varchar2(100) not null
+);
+
+CREATE TABLE Coordenacao_Academica (
+    ID_Coordenacao number(8) not null PRIMARY KEY,
+    Nome varchar2(100) not null,
+    Cargo varchar2(40) not null
+);
+
+-- Criação das tabelas associativas e definição das chaves estrangeiras 
+
+CREATE TABLE Notas (
+    ID_Notas number(3) not null PRIMARY KEY,
+    Matricula number(8) not null,
+    ID_Disciplina number(8) not null,
+    Valor number(3) not null,
+    Resultado number(3) not null,
+    Data date not null
+);
+
+ALTER TABLE Notas ADD CONSTRAINT FK_Matricula_Notas
+    FOREIGN KEY (Matricula) REFERENCES Aluno (Matricula);
+ALTER TABLE Notas ADD CONSTRAINT FK_ID_Disciplina_Notas
+    FOREIGN KEY (ID_Disciplina) REFERENCES Disciplina (ID_Disciplina);
+
+CREATE TABLE Frequencia (
+    Frequencia number(3) not null PRIMARY KEY,
+    Matricula number(8) not null,
+    ID_Disciplina number(8) not null,
+    Presente varchar2(1) not null,
+    Justificativa varchar2(100),
+    Data date not null
+);
+
+ALTER TABLE Frequencia ADD CONSTRAINT FK_Matricula_Frequencia
+    FOREIGN KEY (Matricula) REFERENCES Aluno (Matricula);
+ALTER TABLE Frequencia ADD CONSTRAINT FK_ID_Disciplina_Frequencia
+    FOREIGN KEY (ID_Disciplina) REFERENCES Disciplina (ID_Disciplina);
+
+CREATE TABLE AlunoDisciplina (
+    ID_AlunoDisiciplina number(3) not null PRIMARY KEY,
+    ID_Disciplina number(8) not null,
+    Matricula number(8) not null
+);
+
+ALTER TABLE AlunoDisciplina ADD CONSTRAINT FK_ID_Disciplina
+    FOREIGN KEY (ID_Disciplina) REFERENCES Disciplina (ID_Disciplina);
+ALTER TABLE AlunoDisciplina ADD CONSTRAINT FK_Matricula
+    FOREIGN KEY (Matricula) REFERENCES Aluno (Matricula);
+
+CREATE TABLE ProfessorDisciplina (
+    ID_ProfessorDisciplina number(3) not null PRIMARY KEY,
+    ID_Disciplina number(8) not null,
+    ID_Professor number(8) not null
+);
+
+ALTER TABLE ProfessorDisciplina ADD CONSTRAINT FK_ID_Disciplina_ProfessorDisciplina
+    FOREIGN KEY (ID_Disciplina) REFERENCES Disciplina (ID_Disciplina);
+ALTER TABLE ProfessorDisciplina ADD CONSTRAINT FK_ID_Professor
+    FOREIGN KEY (ID_Professor) REFERENCES Professor (ID_Professor);
+
+CREATE TABLE CoordenacaoAluno (
+    ID_CoordenacaoAluno number(3) not null PRIMARY KEY,
+    ID_Coordenacao number(8) not null,
+    Matricula number(8) not null
+);
+
+ALTER TABLE CoordenacaoAluno ADD CONSTRAINT FK_Matricula_CoordenacaoAluno
+    FOREIGN KEY (Matricula) REFERENCES Aluno (Matricula);
+ALTER TABLE CoordenacaoAluno ADD CONSTRAINT FK_ID_Coordenacao_CoordenacaoAluno
+    FOREIGN KEY (ID_Coordenacao) REFERENCES Coordenacao_Academica (ID_Coordenacao);
+
+CREATE TABLE CoordenacaoProfessor (
+    ID_CoordenacaoProfessor number(3) not null PRIMARY KEY,
+    ID_Coordenacao number(8) not null,
+    ID_Professor number(8) not null
+);
+
+ALTER TABLE CoordenacaoProfessor ADD CONSTRAINT FK_ID_Professor_CoordenacaoProfessor
+    FOREIGN KEY (ID_Professor) REFERENCES Professor (ID_Professor);
+ALTER TABLE CoordenacaoProfessor ADD CONSTRAINT FK_ID_Coordenacao_CoordenacaoProfessor
+    FOREIGN KEY (ID_Coordenacao) REFERENCES Coordenacao_Academica (ID_Coordenacao);
+
+
+-- Inserção de dados na tabela 
+
+-- ALUNO
+INSERT INTO Aluno (Matricula, Nome, Email, Serie)
+    VALUES (00000001, 'Felipe Marconi Gomes de Araujo', 'felipe.araujo@edu.unifil.br', '2º ANO');
+INSERT INTO Aluno (Matricula, Nome, Email, Serie)
+    VALUES (00000002, 'Gustavo Antônio Silva Oliveira', 'gustavo.antonio@edu.unifil.br', '2º ANO');
+INSERT INTO Aluno (Matricula, Nome, Email, Serie)
+    VALUES (00000003, 'Renato Teixeira Barreto', 'renato.barreto@edu.unifil.br', '2º ANO');
+INSERT INTO Aluno (Matricula, Nome, Email, Serie)
+    VALUES (00000004, 'Rafael Previatto de Morais', 'rafael.previatto@edu.unifil.br', '2º ANO');
+INSERT INTO Aluno (Matricula, Nome, Email, Serie)
+    VALUES (00000005, 'João Felipe Garcia da Silva', 'joao.garcia@edu.unifil.br', '2º ANO');
+INSERT INTO Aluno (Matricula, Nome, Email, Serie)
+    VALUES (00000006, 'Leonardo Moreira Arcebispo de Sá', 'leonardo.moreira@edu.unifil.br', '2º ANO');
+
+SELECT * FROM ALUNO;
+
+-- DISCIPLINA
+INSERT INTO Disciplina (ID_Disciplina, NomeDisciplina, CargaHoraria)
+    VALUES (001, 'SQL Básico', '30');
+INSERT INTO Disciplina (ID_Disciplina, NomeDisciplina, CargaHoraria)
+    VALUES (002, 'Algoritmo e Estrutura de Dados', '30');
+INSERT INTO Disciplina (ID_Disciplina, NomeDisciplina, CargaHoraria)
+    VALUES (003, 'AL: Transformações Lineares', '15');
+INSERT INTO Disciplina (ID_Disciplina, NomeDisciplina, CargaHoraria)
+    VALUES (004, 'Princípios de UI/UX', '15');
+INSERT INTO Disciplina (ID_Disciplina, NomeDisciplina, CargaHoraria)
+    VALUES (005, 'Introdução à Kotlin', '15');
+INSERT INTO Disciplina (ID_Disciplina, NomeDisciplina, CargaHoraria)
+    VALUES (006, 'Projeto Interdisciplinar V', '15');
+
+SELECT * FROM DISCIPLINA;
+
+--PROFESSOR
+INSERT INTO Professor (ID_Professor, Email, Nome)
+    VALUES (0001, 'edson.kaneshima@unifil.br', 'Edson Kaneshima');
+INSERT INTO Professor (ID_Professor, Email, Nome)
+    VALUES (0002, 'ricardo.petri@unifil.br', 'Ricardo Petri');
+INSERT INTO Professor (ID_Professor, Email, Nome)
+    VALUES (0003, 'bruna.sozzo@unifil.br', 'Bruna Sozzo');
+INSERT INTO Professor (ID_Professor, Email, Nome)
+    VALUES (0004, 'marcelo.nakasse@unifil.br', 'Marcelo Nakasse');
+INSERT INTO Professor (ID_Professor, Email, Nome)
+    VALUES (0005, 'felipe.nathan@unifil.br', 'Felipe Nathan');
+INSERT INTO Professor (ID_Professor, Email, Nome)
+    VALUES (0006, 'wilson.sanches@unifil.br', 'Ricardo Petri');
+
+SELECT * FROM PROFESSOR;
+
+-- COORDENACAO_ACADEMICA
+INSERT INTO Coordenacao_Academica (ID_Coordenacao, Nome, Cargo)
+    VALUES (000001, 'Sérgio Tanaka', 'Coordenador');
+INSERT INTO Coordenacao_Academica (ID_Coordenacao, Nome, Cargo)
+    VALUES (000002, 'Simone Tanaka', 'Coordenadora');
+INSERT INTO Coordenacao_Academica (ID_Coordenacao, Nome, Cargo)
+    VALUES (000003, 'Eleazar Ferreira', 'Reitor');
+INSERT INTO Coordenacao_Academica (ID_Coordenacao, Nome, Cargo)
+    VALUES (000004, 'Julia Silva', 'Secretária Chefe');
+INSERT INTO Coordenacao_Academica (ID_Coordenacao, Nome, Cargo)
+    VALUES (000005, 'Carla Corrêa', 'Coordenadora EAD');
+INSERT INTO Coordenacao_Academica (ID_Coordenacao, Nome, Cargo)
+    VALUES (000006, 'Paulo Andrade', 'Service Desk');
+
+SELECT * FROM COORDENACAO_ACADEMICA;
+
+
+
+-- POPULANDO AS TABELAS ASSOCIATIVAS 
+INSERT INTO AlunoDisciplina (ID_AlunoDisiciplina, ID_Disciplina, Matricula)
+    VALUES (1, 001, 00000001);
+INSERT INTO AlunoDisciplina (ID_AlunoDisiciplina, ID_Disciplina, Matricula)
+    VALUES(2, 002, 00000002);
+INSERT INTO AlunoDisciplina (ID_AlunoDisiciplina, ID_Disciplina, Matricula)
+    VALUES(3, 003, 00000003);
+INSERT INTO AlunoDisciplina (ID_AlunoDisiciplina, ID_Disciplina, Matricula)
+    VALUES(4, 004, 00000004);
+INSERT INTO AlunoDisciplina (ID_AlunoDisiciplina, ID_Disciplina, Matricula)
+    VALUES(5, 005, 00000005);
+INSERT INTO AlunoDisciplina (ID_AlunoDisiciplina, ID_Disciplina, Matricula)
+    VALUES(6, 006, 00000006);
+
+INSERT INTO ProfessorDisciplina (ID_ProfessorDisciplina, ID_Disciplina, ID_Professor)
+    VALUES (1, 001, 0001);
+INSERT INTO ProfessorDisciplina (ID_ProfessorDisciplina, ID_Disciplina, ID_Professor)
+    VALUES (2, 002, 0002);
+INSERT INTO ProfessorDisciplina (ID_ProfessorDisciplina, ID_Disciplina, ID_Professor)
+    VALUES (3, 003, 0003);
+INSERT INTO ProfessorDisciplina (ID_ProfessorDisciplina, ID_Disciplina, ID_Professor)
+    VALUES (4, 004, 0004);
+INSERT INTO ProfessorDisciplina (ID_ProfessorDisciplina, ID_Disciplina, ID_Professor)
+    VALUES (5, 005, 0005);
+INSERT INTO ProfessorDisciplina (ID_ProfessorDisciplina, ID_Disciplina, ID_Professor)
+    VALUES (6, 006, 0006);
+
+
+INSERT INTO CoordenacaoAluno (ID_CoordenacaoAluno, ID_Coordenacao, Matricula)
+    VALUES (1, 000001, 00000001);
+INSERT INTO CoordenacaoAluno (ID_CoordenacaoAluno, ID_Coordenacao, Matricula)
+    VALUES (2, 000002, 00000002);
+INSERT INTO CoordenacaoAluno (ID_CoordenacaoAluno, ID_Coordenacao, Matricula)
+    VALUES (3, 000003, 00000003);
+INSERT INTO CoordenacaoAluno (ID_CoordenacaoAluno, ID_Coordenacao, Matricula)
+    VALUES (4, 000004, 00000004);
+INSERT INTO CoordenacaoAluno (ID_CoordenacaoAluno, ID_Coordenacao, Matricula)
+    VALUES (5, 000005, 00000005);
+INSERT INTO CoordenacaoAluno (ID_CoordenacaoAluno, ID_Coordenacao, Matricula)
+    VALUES (6, 000006, 00000006);
+
+INSERT INTO CoordenacaoProfessor (ID_CoordenacaoProfessor, ID_Coordenacao, ID_Professor)
+    VALUES (1, 000001, 0001);
+INSERT INTO CoordenacaoProfessor (ID_CoordenacaoProfessor, ID_Coordenacao, ID_Professor)
+    VALUES (2, 000002, 0002);
+INSERT INTO CoordenacaoProfessor (ID_CoordenacaoProfessor, ID_Coordenacao, ID_Professor)
+    VALUES (3, 000003, 0003);
+INSERT INTO CoordenacaoProfessor (ID_CoordenacaoProfessor, ID_Coordenacao, ID_Professor)
+    VALUES (4, 000004, 0004);
+INSERT INTO CoordenacaoProfessor (ID_CoordenacaoProfessor, ID_Coordenacao, ID_Professor)
+    VALUES (5, 000005, 0005);
+INSERT INTO CoordenacaoProfessor (ID_CoordenacaoProfessor, ID_Coordenacao, ID_Professor)
+    VALUES (6, 000006, 0006);
+
+
+INSERT INTO Notas (ID_Notas, Matricula, ID_Disciplina, Valor, Resultado, Data)
+    VALUES (1, 00000001, 001, 100, 85, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Notas (ID_Notas, Matricula, ID_Disciplina, Valor, Resultado, Data)
+    VALUES (2, 00000002, 002, 100, 90, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Notas (ID_Notas, Matricula, ID_Disciplina, Valor, Resultado, Data)
+    VALUES (3, 00000003, 003, 50, 38, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Notas (ID_Notas, Matricula, ID_Disciplina, Valor, Resultado, Data)
+    VALUES (4, 00000004, 004, 50, 44, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Notas (ID_Notas, Matricula, ID_Disciplina, Valor, Resultado, Data)
+    VALUES (5, 00000005, 005, 100, 92, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Notas (ID_Notas, Matricula, ID_Disciplina, Valor, Resultado, Data)
+    VALUES (6, 00000006, 006, 100, 80, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+
+
+INSERT INTO Frequencia (Frequencia, Matricula, ID_Disciplina, Presente, Justificativa, Data)
+    VALUES (1, 00000001, 001, 'S', NULL, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Frequencia (Frequencia, Matricula, ID_Disciplina, Presente, Justificativa, Data)
+    VALUES (2, 00000002, 002, 'S', NULL, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Frequencia (Frequencia, Matricula, ID_Disciplina, Presente, Justificativa, Data)
+    VALUES (3, 00000003, 003, 'N', 'Febre', TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Frequencia (Frequencia, Matricula, ID_Disciplina, Presente, Justificativa, Data)
+    VALUES (4, 00000004, 004, 'S', NULL, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Frequencia (Frequencia, Matricula, ID_Disciplina, Presente, Justificativa, Data)
+    VALUES (5, 00000005, 005, 'S', NULL, TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+INSERT INTO Frequencia (Frequencia, Matricula, ID_Disciplina, Presente, Justificativa, Data)
+    VALUES (6, 00000006, 006, 'N', 'Consulta médica', TO_DATE('2025-03-30', 'YYYY-MM-DD'));
+
+
+
+SELECT * FROM ALUNO;
+SELECT * FROM DISCIPLINA;
+SELECT * FROM ALUNODISCIPLINA;
+SELECT * FROM FREQUENCIA;
+SELECT * FROM NOTAS;
+SELECT * FROM PROFESSOR;
+SELECT * FROM PROFESSORDISCIPLINA;
+SELECT * FROM COORDENACAO_ACADEMICA;
+SELECT * FROM COORDENACAOALUNO;
+SELECT * FROM COORDENACAOPROFESSOR;

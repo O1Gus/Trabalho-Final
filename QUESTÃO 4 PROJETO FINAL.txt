@@ -1,0 +1,69 @@
+---------  QUESTÃO 4
+
+------ PRIMEIRO EXEMPLO
+------ Alunos que tiraram notas acima da média geral, ordenando pelos melhores resultados.
+
+SELECT a.Matricula, a.Nome AS Aluno, d.NomeDisciplina, n.Resultado 
+    FROM Aluno a 
+    INNER JOIN Notas n ON a.Matricula = n.Matricula 
+    INNER JOIN Disciplina d ON n.ID_Disciplina = d.ID_Disciplina 
+    WHERE n.Resultado > (SELECT AVG(Resultado) FROM Notas) 
+    ORDER BY n.Resultado DESC;
+
+------ SEGUNDO EXEMPLO
+------ Professores e as disciplinas que eles ministram, ordena os professores pelo nome.
+
+SELECT p.Nome AS Professor, d.NomeDisciplina 
+    FROM Professor p 
+    LEFT OUTER JOIN ProfessorDisciplina pd ON p.ID_Professor = pd.ID_Professor 
+    LEFT OUTER JOIN Disciplina d ON pd.ID_Disciplina = d.ID_Disciplina 
+    WHERE d.NomeDisciplina IS NOT NULL 
+    ORDER BY p.Nome;
+
+------ TERCEIRO EXEMPLO
+------ Retorna a média de notas por disciplina e somente alunos aprovados (média ≥ 60).
+
+SELECT d.NomeDisciplina, a.Nome AS Nome_Aluno, 
+    AVG(n.Resultado) AS Media_Nota 
+    FROM Notas n 
+    INNER JOIN Aluno a ON n.Matricula = a.Matricula 
+    INNER JOIN Disciplina d ON n.ID_Disciplina = d.ID_Disciplina 
+    GROUP BY d.NomeDisciplina, a.Nome 
+    HAVING AVG(n.Resultado) >= 60 
+    ORDER BY Media_Nota DESC;
+
+------ QUARTO EXEMPLO
+------ Alunos e suas frequências 
+
+SELECT a.Nome AS Nome_Aluno, d.NomeDisciplina, f.Presente, f.Justificativa, f.Data 
+    FROM Aluno a 
+    LEFT OUTER JOIN Frequencia f ON a.Matricula = f.Matricula 
+    LEFT OUTER JOIN Disciplina d ON f.ID_Disciplina = d.ID_Disciplina 
+    ORDER BY a.Nome, f.Data DESC;
+
+------ QUINTO EXEMPLO
+------ exibindo os alunos mesmo que tenham coordenador associado.
+
+SELECT a.Nome AS Aluno, c.Nome AS Coordenador 
+    FROM Aluno a 
+    LEFT OUTER JOIN CoordenacaoAluno ca ON a.Matricula = ca.Matricula 
+    LEFT OUTER JOIN Coordenacao_Academica c ON ca.ID_Coordenacao = c.ID_Coordenacao;
+
+
+------ SEXTO EXEMPLO
+------ Alunos, disciplinas e notas, exibe se estão aprovados ou reporvaods.
+
+SELECT a.Nome AS Aluno, d.NomeDisciplina, n.Resultado, 
+       'Aprovado' AS Situacao
+FROM Aluno a
+JOIN Notas n ON a.Matricula = n.Matricula
+JOIN Disciplina d ON n.ID_Disciplina = d.ID_Disciplina
+WHERE n.Resultado >= 60 
+    UNION
+SELECT a.Nome AS Aluno, d.NomeDisciplina, n.Resultado, 
+       'Reprovado' AS Situacao
+FROM Aluno a
+JOIN Notas n ON a.Matricula = n.Matricula
+JOIN Disciplina d ON n.ID_Disciplina = d.ID_Disciplina
+WHERE n.Resultado < 60
+ORDER BY Resultado DESC;
