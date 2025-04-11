@@ -11,7 +11,7 @@ public class ListaDinamiquinha implements IDinamiquinha{
 
     @Override
     public void inserirElemento(String elemento) {
-        No novo = new No((String) elemento);
+        No novo = new No(elemento);
 
         if(estaVazia()){
 
@@ -90,48 +90,46 @@ public class ListaDinamiquinha implements IDinamiquinha{
 
     @Override
     public void removerTodasOcorrencias(String elemento) {
-        if(estaVazia()){
-            System.out.println("A lista está vazia.");
+        if (estaVazia()) {
+            System.out.println("A lista está vazia. Nenhuma ocorrência para remover.");
             return;
         }
 
-        String valor = elemento;
         No atual = primeiro;
+        boolean encontrou = false;
 
-        while(atual != null){
-            if(atual.getConteudo().equals(valor)){
+        while (atual != null) {
+            if (atual.getConteudo().equals(elemento)) {
+                encontrou = true;
                 No proximo = atual.getProx();
 
-                if(atual == primeiro && atual == ultimo){
+                if (atual == primeiro && atual == ultimo) {
                     primeiro = ultimo = null;
                 } else if (atual == primeiro) {
                     primeiro = atual.getProx();
-                    if (primeiro !=null){
-                        primeiro.setAnterior(null);
-                    }
+                    if (primeiro != null) primeiro.setAnterior(null);
                 } else if (atual == ultimo) {
                     ultimo = atual.getAnterior();
-                    if (primeiro != null){
-                        ultimo.setProx(null);
-                    } else if (atual == ultimo) {
-                        ultimo = atual.getAnterior();
-                        if(ultimo != null){
-                            ultimo.setProx(null);
-                        }
-                    }else {
-                        atual.getAnterior().setProx(atual.getProx());
-                        atual.getProx().setAnterior(atual.getAnterior());
-                    }
-
-                    tamanho--;
-                    atual = proximo;
-                }else {
-                    atual = atual.getProx();
+                    if (ultimo != null) ultimo.setProx(null);
+                } else {
+                    atual.getAnterior().setProx(atual.getProx());
+                    atual.getProx().setAnterior(atual.getAnterior());
                 }
+
+                tamanho--;
+                atual = proximo;
+            } else {
+                atual = atual.getProx();
             }
         }
-        System.out.println("Os itens " + valor + " foram removidos!");
+
+        if (encontrou) {
+            System.out.println("Todas as ocorrências do elemento \"" + elemento + "\" foram removidas.");
+        } else {
+            System.out.println("Nenhuma ocorrência do elemento \"" + elemento + "\" foi encontrada.");
+        }
     }
+
 
     @Override
     public boolean estaCheia() {
